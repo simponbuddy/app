@@ -1,0 +1,72 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+    *{ margin: 0; padding: 0; }
+    input , button { font-family: "Lato", serif; }
+    body { font-family: "Lato", serif; }
+    .error { display: none; }
+    .container img { width: 90px; border-radius: 125px; }
+    .container { display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column;}
+    #registrationForm { display: flex; flex-direction: column; width: 100%; align-items: center; }
+    input { width: 80%; padding: 8px 10px 8px 15px; border-radius: 25px; border: none; outline: none; color: #000; margin: 10px 0px 0px 0px; background: #eee; }
+    button { width: 80%; padding: 8px 10px 8px 15px; border-radius: 25px; border: none; outline: none; color: #eee; margin: 15px; background: #000; }
+    h2 { margin: 15px 0px 0px 0px; font-weight: 400; }
+    p { font-size: 19px; }
+    a { text-decoration: none; }
+</style>
+<div class="container">
+    <img src="https://i.ibb.co/r5N9gxC/icon.png">
+    <h2>Track You Expense</h2>
+    <p>Save Your Money</p>
+    <form id="registrationForm">
+            <input type="text" id="name" placeholder="Name:" name="name" required pattern="[A-Za-z\s]+" title="Please enter only letters and spaces">
+            <input type="email" id="email" placeholder="E-Mail:" name="email" required>
+            <input type="number" id="mobile" placeholder="Mobile Number:" name="mobile" required pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number">
+            <input type="text" id="secretCode" placeholder="Secret Code:" name="secretCode" required>
+            <div id="codeError" class="error">Invalid secret code. Please try again.</div>
+            <input type="password" placeholder="Password:" id="password" name="password" required minlength="8">
+        <button type="submit">Submit</button>
+    </form>
+    <div class="bottom">
+    <p style="font-size: 17px; ">Already Have An Account <a href="login.html">Click Here</a></p>
+    <p>Buy Secret Code <a href="license.html">Click Here</a></p>
+</div>
+</div>
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            mobile: document.getElementById('mobile').value,
+            secretCode: document.getElementById('secretCode').value,
+            password: document.getElementById('password').value
+        };
+
+        try {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwO4vsoDGYhv8oEIFAf-3XwMF_bHDnQgROq24o0Eteq5uPJ9cOM-ykb6jj5z1pvKibqTg/exec';
+            const response = await fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                alert('Registration successful!');
+                this.reset();
+                document.getElementById('codeError').style.display = 'none';
+                window.location.href = 'login.html';
+            } else if (result.status === 'invalid_code') {
+                document.getElementById('codeError').style.display = 'block';
+            } else {
+                throw new Error('Registration failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+</script>

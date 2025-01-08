@@ -1,0 +1,73 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+    *{ margin: 0; padding: 0; }
+    input , button { font-family: "Lato", serif; }
+    body { font-family: "Lato", serif; }
+    .error { display: none; }
+    .container img { width: 90px; border-radius: 125px; }
+    .container { display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column;}
+    #loginForm { display: flex; flex-direction: column; width: 100%; align-items: center; }
+    input { width: 80%; padding: 8px 10px 8px 15px; border-radius: 25px; border: none; outline: none; color: #000; margin: 10px 0px 0px 0px; background: #eee; }
+    button { width: 80%; padding: 8px 10px 8px 15px; border-radius: 25px; border: none; outline: none; color: #eee; margin: 15px; background: #000; }
+    h2 { margin: 15px 0px 0px 0px; font-weight: 400; }
+    p { font-size: 19px; }
+    a { text-decoration: none; }
+    .error { display: none; }
+</style>
+<div class="container">
+    <img src="https://i.ibb.co/r5N9gxC/icon.png">
+    <h2>Track You Expense</h2>
+    <p>Save Your Money</p>
+    <form id="loginForm">
+        <input type="email" id="email" name="email" placeholder="E-Mail:" required>
+        <input type="password" id="password" placeholder="Password:" name="password" required>
+        <button type="submit">Login</button>
+        <div id="loginError" class="error">Invalid email or password</div>
+    </form>
+    <p style="font-size: 17px; ">Don't Have Account <a href="signup.html">Click Here</a></p>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('loginError');
+
+        try {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxXPQBYEx_bRZEO-fnMR_wPimqJMGewOcScHcqkqDRZKvo4P6uRK6SKc6Af1tvtvKcA_Q/exec';
+            const response = await fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'login',
+                    email: email,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('isLoggedIn', 'true');
+                alert('Login successful!');
+                window.location.href = 'index.html';
+            } else {
+                errorDiv.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+
+    window.onload = function() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+            window.location.href = 'index.html';
+        }
+    };
+</script>

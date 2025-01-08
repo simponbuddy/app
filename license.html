@@ -1,0 +1,102 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+    *{ margin: 0; padding: 0; }
+    .header { display: flex; align-items: center; padding: 10px; font-family: "Henny Penny", serif; border-bottom: 1px solid #939393; }
+    .header h2 { margin: 0px 0px 0px 10px; }
+    .header img { width: 40px; height: 40px; border-radius: 125px; }
+    input , button { font-family: "Lato", serif; }
+    body { font-family: "Lato", serif; }
+    input { padding: 10px 5px 10px 15px; border-radius: 25px; width: 100%; border: none; margin: 10px; outline: none; background: #eee; }
+    button { padding: 8px; border: none; width: 130px; color: #fff; background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    .container { display: flex; align-items: center; flex-direction: column; justify-content: center; height: 80vh; }
+    .form-group { display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    img{ margin: 10px; }
+    .preview-image { width: 120px }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<div class="header">
+    <img src="https://i.ibb.co/r5N9gxC/icon.png">
+    <h2>Expense Tracker</h2>
+</div>
+<div class="container">
+    <h2>Scan And Pay</h2>
+    <div id="qrcode"></div>
+    <form id="paymentForm">
+        <div class="form-group">
+            <input type="email" id="email" name="email" placeholder="Email:" required>
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+            <img id="preview" class="preview-image" style="display: none;">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "upi://pay?pa=createprincemahto-2@okaxis&pn=Simpons!&am=121",
+        width: 200,
+        height: 200
+    });
+
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('preview');
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const imageFile = document.getElementById('image').files[0];
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        try {
+            const imgurResponse = await fetch('https://api.imgur.com/3/image', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Client-ID bd8f385a44a4a5f'
+                },
+                body: formData
+            });
+
+            const imgurData = await imgurResponse.json();
+            const imageUrl = imgurData.data.link;
+
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzB_-sGGZ58-6143cIGuvyjyOETlqGiSjtQ-_iN1Pw2OlCE0w9BkFms04LWbf6kc41Fng/exec';
+            const response = await fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: email,
+                    imageUrl: imageUrl,
+                    timestamp: new Date().toISOString()
+                })
+            });
+
+            if (response.ok) {
+                alert('Form submitted successfully!');
+                this.reset();
+                document.getElementById('preview').style.display = 'none';
+            } else {
+                throw new Error('Failed to submit form');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+</script>
