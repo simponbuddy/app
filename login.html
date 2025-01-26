@@ -1,23 +1,107 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-    *{ margin: 0; padding: 0; }
-    input , button { font-family: "Lato", serif; }
-    body { font-family: "Lato", serif; }
-    .error { display: none; }
-    .container img { width: 90px; border-radius: 125px; }
-    .container { display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column;}
-    #loginForm { display: flex; flex-direction: column; width: 100%; align-items: center; }
-    input { width: 80%; padding: 8px 10px 8px 15px; border-radius: 25px; border: none; outline: none; color: #000; margin: 10px 0px 0px 0px; background: #eee; }
-    button { width: 80%; padding: 8px 10px 8px 15px; border-radius: 25px; border: none; outline: none; color: #eee; margin: 15px; background: #000; }
-    h2 { margin: 15px 0px 0px 0px; font-weight: 400; }
-    p { font-size: 19px; }
-    a { text-decoration: none; }
-    .error { display: none; }
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --background-color: #f4f6f7;
+        --text-color: #2c3e50;
+        --error-color: #e74c3c;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Open Sans', sans-serif;
+        background-color: var(--background-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .container img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+    }
+
+    .container h2 {
+        font-family: 'Poppins', sans-serif;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .container p {
+        color: var(--text-color);
+        margin-bottom: 20px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    #loginForm {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #2980b9;
+    }
+
+    .error {
+        color: var(--error-color);
+        display: none;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
 </style>
 <div class="container">
-    <img src="https://i.ibb.co/r5N9gxC/icon.png">
     <h2>Track You Expense</h2>
     <p>Save Your Money</p>
     <form id="loginForm">
@@ -26,13 +110,12 @@
         <button type="submit">Login</button>
         <div id="loginError" class="error">Invalid email or password</div>
     </form>
-    <p style="font-size: 17px; ">Don't Have Account <a href="signup.html">Click Here</a></p>
+    <p style="font-size: 17px;">Don't Have Account <a href="signup.html">Click Here</a></p>
 </div>
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const errorDiv = document.getElementById('loginError');
@@ -49,7 +132,6 @@
             });
 
             const result = await response.json();
-            
             if (result.status === 'success') {
                 localStorage.setItem('userEmail', email);
                 localStorage.setItem('isLoggedIn', 'true');
