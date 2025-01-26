@@ -180,6 +180,9 @@
         .recommendation-item:last-child {
             border-bottom: none;
         }
+        .customer-text { display: flex; align-items: center; gap: 10px; margin: 10px; }
+        .customer-text h3 { margin: 0px; }
+        .customer-text hr { flex-grow: 1; border: none; border-top: 1px solid #000; }
         .buttons button { width: 150px; }
         .buttons {
             display: flex;
@@ -217,7 +220,14 @@
                     </div>
                 </div>
             </div>
-
+            <div class="customer-text">
+                <h3>Track Your</h3>
+                <hr>
+            </div>
+            <div class="buttons">
+                <a href="add_expense.html"><button>Expense</button></a>
+                <a href="add_earning.html"><button>Earning</button></a>
+            </div>
             <div class="card">
                 <h2>Investment Recommendations</h2>
                 <div class="investment-options" id="investmentOptions">
@@ -225,10 +235,6 @@
                 </div>
             </div>
         </div>
-        <div class="buttons">
-        <a href="add_expense.html"><button>Expense</button></a>
-        <a href="add_earning.html"><button>Earning</button></a>
-    </div>
         <div class="goals-section card">
             <h2>Financial Goals</h2>
             <form id="goalForm" class="goal-form">
